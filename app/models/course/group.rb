@@ -76,6 +76,14 @@ class Course::Group < ApplicationRecord
 
   scope :ordered_by_name, -> { order(name: :asc) }
 
+  def manager_ids
+    group_users.where(role: 'manager').pluck(:course_user_id)
+  end
+
+  def normal_ids
+    group_users.where(role: 'normal').pluck(:course_user_id)
+  end
+
   private
 
   # Set default values

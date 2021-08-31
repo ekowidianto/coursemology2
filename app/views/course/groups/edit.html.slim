@@ -17,5 +17,13 @@
   .links
     = link_to_add_association t('.add_user'), f, :group_users,
                               find_selector: 'tbody.group_user_fields', insert_using: 'append'
+  = f.input :manager_ids, as: :token, collection: current_course.course_users.order_alphabetically,
+    multiple: true, label: t('.manager')
+
+  = f.input :normal_ids, as: :token, collection: current_course.course_users.order_alphabetically,
+    multiple: true, label: t('.normal')
+
+  //= f.association :course_users, as: :token, collection: current_course.course_users.order_alphabetically - [current_course_user],
+    multiple: true
 
   = f.button :submit

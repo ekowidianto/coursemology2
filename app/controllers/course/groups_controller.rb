@@ -28,6 +28,7 @@ class Course::GroupsController < Course::ComponentController
   end
 
   def update #:nodoc:
+    @group.group_users.destroy_all
     if @group.update_attributes(group_params)
       redirect_to course_groups_path(current_course), success: t('.success', name: @group.name)
     else
@@ -47,6 +48,10 @@ class Course::GroupsController < Course::ComponentController
   private
 
   def group_params #:nodoc:
+    group_managers_attributes = params[:group][:manager_ids].select{ |item| item != "" }.map{ |item| {course_user_id: item, role: "manager"} }
+    group_normals_attributes = params[:group][:normal_ids].select{ |item| item != "" }.map{ |item| {course_user_id: item, role: "normal"} }
+    params[:group][:group_users_attributes] = group_managers_attributes + group_normals_attributes
+    byebug
     params.require(:group).
       permit(:name, course_user_ids: [],
                     group_users_attributes: [:id, :course_user_id, :role, :_destroy])
